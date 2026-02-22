@@ -159,7 +159,7 @@ impl winit::application::ApplicationHandler for WinitHandler {
             let winfbx_handle = self.winfbx.clone();
 
             let mut attr = Window::default_attributes()
-                .with_inner_size(winit::dpi::LogicalSize::new(width as f64, height as f64)) // LogicalSize to auto
+                .with_inner_size(winit::dpi::PhysicalSize::new(width as u32, height as u32))
                 .with_title("Chinchilib App");
 
             #[cfg(target_arch = "wasm32")]
@@ -189,6 +189,9 @@ impl winit::application::ApplicationHandler for WinitHandler {
                         let _ = canvas_el
                             .style()
                             .set_property("height", &format!("{}px", height));
+                        let _ = canvas_el
+                            .style()
+                            .set_property("image-rendering", "pixelated");
                     }
 
                     let container = doc.get_element_by_id("wasm-canvas-container");
@@ -259,13 +262,7 @@ impl winit::application::ApplicationHandler for WinitHandler {
                     WindowEvent::Resized(size) => {
                         #[cfg(target_arch = "wasm32")]
                         {
-                            if size.width > 0
-                                && size.width <= 4096
-                                && size.height > 0
-                                && size.height <= 4096
-                            {
-                                fbx.process_resize(size);
-                            }
+                            let _ = size;
                         }
                         #[cfg(not(target_arch = "wasm32"))]
                         fbx.process_resize(size);
