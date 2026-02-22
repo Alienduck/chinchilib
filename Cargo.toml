@@ -5,6 +5,11 @@ edition = "2021"
 license-file = "LICENSE.txt"
 description = "A graphical prototyping library for my students"
 
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+web-time = "1.1"
+wasm-bindgen-futures = "0.4"
+pollster = "0.3"
+web-sys = { version = "0.3", features = ["Window", "Document", "Element", "HtmlCanvasElement", "Node", "HtmlElement"] }
 [dependencies]
 array2d = "0.3.2"
 env_logger = "0.11.5"
@@ -12,6 +17,7 @@ log = "0.4.22"
 pixels = "0.14.0"
 rgb = "0.8.50"
 winit = { version = "0.30.5", features = ["rwh_06", "rwh_05", "rwh_04", "x11"], default-features = false }
+wasm-bindgen = "0.2.111"
 
 [lints.rust]
 # unused = "allow"
