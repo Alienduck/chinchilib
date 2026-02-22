@@ -242,7 +242,9 @@ impl winit::application::ApplicationHandler for WinitHandler {
                     fbx.on_tick();
                     fbx.window.request_redraw();
                 } else {
-                    event_loop.set_control_flow(winit::event_loop::ControlFlow::Poll);
+                    event_loop.set_control_flow(winit::event_loop::ControlFlow::WaitUntil(
+                        self.last_frame + self.tick,
+                    ));
                 }
             }
         }
@@ -376,14 +378,11 @@ impl WinFbx {
     fn on_redraw(&mut self) {
         if self.needs_render {
             self.app.draw(&mut self.pixels, self.width);
+            if let Err(err) = self.pixels.render() {
+                log::error!("failed to render with error {}", err);
+            }
+            self.needs_render = false;
         }
-
-        if let Err(err) = self.pixels.render() {
-            log::error!("failed to render with error {}", err);
-            return;
-        }
-
-        self.needs_render = false;
     }
 
     fn done(&self) -> bool {
